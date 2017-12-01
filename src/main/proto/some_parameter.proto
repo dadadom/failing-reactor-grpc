@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package my.some_parameters;
+
+message SomeParameter {
+    string id = 1;
+}

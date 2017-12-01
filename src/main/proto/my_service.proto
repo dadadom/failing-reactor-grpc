@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package my.some_service;
+
+import "some_parameter.proto";
+
+service MyService {
+    rpc DoStuff (my.some_parameters.SomeParameter) returns (my.some_parameters.SomeParameter);
+}

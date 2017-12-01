@@ -1,0 +1,47 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.google.protobuf:protobuf-gradle-plugin:0.8.3"
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'com.google.protobuf'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "com.google.protobuf:protobuf-java:3.5.0"
+    compile "io.grpc:grpc-all:1.8.0"
+    compile 'com.salesforce.servicelibs:reactor-grpc-stub:0.7.1'
+}
+
+protobuf {
+    protoc {
+        // Download from repositories
+        artifact = "com.google.protobuf:protoc:3.5.0"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:1.8.0"
+        }
+        reactor {
+            artifact = "com.salesforce.servicelibs:reactor-grpc:0.7.1:jdk8@jar"
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.plugins {
+                grpc {}
+                reactor {} // including this fails with:
+                // /Users/dsandjaja/development/projects/testing/build/generated/source/proto/main/reactor/my/some_service/ReactorMyServiceGrpc.java:28: error: package my.some_parameters.SomeParameter does not exist
+                // public reactor.core.publisher.Mono<my.some_parameters.SomeParameter.SomeParameter> doStuff(reactor.core.publisher.Mono<my.some_parameters.SomeParameter.SomeParameter> reactorRequest) {
+                //                                                                                                                                                        ^
+                }
+        }
+    }
+}
